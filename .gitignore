@@ -1,0 +1,57 @@
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vs/
+.idea/
+
+# Build results
+bin/
+obj/
+artifacts/
+Debug/
+Release/
+*.log
+
+# IDE-specific settings
+.vscode/
+*.code-workspace
+_ReSharper*/
+*.sln.iml
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+*.nunit.xml
+
+# Dependency files
+node_modules/
+packages/
+*.nupkg
+*.snupkg
+
+# NuGet-related
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+# Rider/JetBrains
+.idea/
+*.DotSettings.user
+
+# Windows/macOS system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Misc
+*.tmp
+*.bak
+*.cache
+*.pidb
+*.scc
+*.tlog
