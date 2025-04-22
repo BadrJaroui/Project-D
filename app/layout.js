@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen bg-[url('/simple-background.jpg')] bg-cover bg-center">
+        <div className="min-h-screen bg-[url('/minimalist-black-bg.jpg')] bg-cover bg-center">
           {children}
         </div>
       </body>
