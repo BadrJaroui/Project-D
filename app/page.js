@@ -5,11 +5,11 @@ import UserInput from "./components/UserInput";
 import ChatReply from "./components/ChatReply";
 
 export default function Home() {
-  const [reply, setReply] = useState("");
+  const [messages, setMessages] = useState([]);
 
   return (
 
-    <div className="items-center object-cover rounded-lg w-full h-64 flex flex-col mt-05">
+    <div className="items-center object-cover rounded-lg w-full min-h-screen flex flex-col mt-05">
       <Image
         className="mt-7"
         src="/ndw-minimalist.png"
@@ -20,8 +20,10 @@ export default function Home() {
       <div className="mb-5">
         Ask our chatbot anything about NDW
       </div>
-      <ChatReply reply={reply}/>
-      <UserInput setReply={setReply} />
+      <div className="w-full max-w-[900px] overflow-y-auto max-h-[300px] mb-2">
+        <ChatReply messages={messages} /> {/*TODO: Van ChatReply naar Chat hernoemen, want user chats en replies wordt hier behandeld*/}
+      </div>
+      <UserInput setMessages={setMessages}/>
     </div>
   );
 }
