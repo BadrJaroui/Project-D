@@ -8,7 +8,15 @@ export default function UserInput({ setMessages }) {
         const userMessage = messageInput.trim();
         if (!userMessage) return;
         setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
-        setMessageInput(""); 
+        setMessageInput("");
+
+        const placeholder = { role: "bot", content: "__THINKING__" }
+        let placeholderIndex;
+        setMessages((prev) => {
+            placeholderIndex = prev.length;
+            return [...prev, placeholder];
+        });
+    
         try {
             const res = await fetch("/api/chat",
                 {
@@ -17,18 +25,29 @@ export default function UserInput({ setMessages }) {
                 });
 
             const data = await res.json();
-            setMessages((prev) => [...prev, { role: "bot", content: data.reply }]);
+            setMessages((prev) => {
+                const updated = [...prev];
+                
+                updated[placeholderIndex] = { role: "bot", content: data.reply };
+                return updated;
+            });
         }
         catch (error) {
-            setMessages((prev) => [...prev, { role: "bot", content: "Something went wrong!" }]);
+            setMessages((prev) => {
+                const updated = [...prev];
+                updated[placeholderIndex] = { role: "bot", content: "Something went wrong!"};
+                return updated;
+            });
         }
     };
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             handleSubmit(e);
         }
     }
+
     return (<div className="fixed bottom-6 w-full flex justify-center px-4">
         <form onSubmit={handleSubmit} className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111]">
             <textarea

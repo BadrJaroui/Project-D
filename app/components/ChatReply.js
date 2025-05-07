@@ -3,12 +3,21 @@ export default function ChatReply({ messages }) {
         <div className="flex flex-col space-y-3">
             {messages.map((msg, index) => (
                 <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <p className={`${msg.role === "user" ? "bg-blue-600" : "bg-gray-800"} text-white p-3 rounded-xl max-w-[70%] text-sm`}>
-                        {msg.content}
-                    </p>
+                    {msg.role === "bot" && msg.content === "__THINKING__" ? (
+                        <video 
+                            src="/loading.mp4" 
+                            autoPlay 
+                            loop 
+                            muted 
+                            className="rounded-xl max-w-[70%] w-50 h-70 bg-gray-800 p-2" 
+                        />
+                    ) : (
+                        <p className={`${msg.role === "user" ? "bg-blue-600" : "bg-gray-800"} text-white p-3 rounded-xl max-w-[70%] text-sm`}>
+                            {msg.content}
+                        </p>
+                    )}
                 </div>
             ))}
-        </div >
+        </div>
     );
 }
-
