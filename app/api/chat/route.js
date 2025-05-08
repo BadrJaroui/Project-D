@@ -12,7 +12,7 @@ export async function POST(request) {
     ],
     stream: false,
     files: [
-        {"type": "collection", "id": "99240161-0492-4b20-9445-39457b542795"}
+        {"type": "collection", "id": "821286ac-b70f-4823-bb80-75e8b1918c4d"}
     ]
 
   };
