@@ -20,7 +20,7 @@ export default function Home() {
       <div className="mb-5">
         Ask our chatbot anything about NDW
       </div>
-      <div className="w-full max-w-[900px] overflow-y-auto max-h-[300px] mb-2">
+      <div className="w-full max-w-[900px] overflow-y-auto max-h-[300px] mb-2 no-scrollbar">
         <ChatReply messages={messages} /> {/*TODO: Van ChatReply naar Chat hernoemen, want user chats en replies wordt hier behandeld*/}
       </div>
       <UserInput setMessages={setMessages}/>
