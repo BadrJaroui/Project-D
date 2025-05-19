@@ -48,23 +48,30 @@ export default function UserInput({ setMessages }) {
         }
     }
 
-    return (<div className="fixed bottom-6 w-full flex justify-center px-4">
-        <form onSubmit={handleSubmit} className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111]">
-            <textarea
-                type="text"
-                placeholder="Ask away!"
-                value={messageInput}
-                onKeyDown={handleKeyDown}
-                onChange={(e) => setMessageInput(e.target.value)}
-                rows={1}
-                className="w-full resize-none bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base" />
-            <button
-                type="submit"
-                className="absolute bottom-1 right-1 bg-blue-500 text-white px-3 py-1 text-sm
-                               rounded-bl-none rounded-lg shadow-sm hover:bg-blue-600"
-            >
-                Send
-            </button>
+    return (
+    <div className="fixed bottom-6 w-full flex justify-center px-4">
+        <form
+        className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111] flex items-center gap-2"
+        >
+        {/* Circle Upload Button */}
+        <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full text-white cursor-pointer hover:bg-blue-600">
+            <img src="paperclip.png" alt="Paperclip Icon" className="w-4 h-4" />
+        </div>
+
+        {/* Text Input */}
+        <textarea
+            placeholder="Ask away!"
+            rows={1}
+            className="flex-1 resize-none bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
+        />
+
+        {/* Send Button */}
+        <div
+            className="absolute bottom-1 right-1 bg-blue-500 text-white px-3 py-1 text-sm
+                    rounded-bl-none rounded-lg shadow-sm hover:bg-blue-600"
+        >
+            Send
+        </div>
         </form>
     </div>
     );
