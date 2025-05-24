@@ -3,11 +3,14 @@ import { useState } from "react";
 import Image from "next/image";
 import UserInput from "./components/UserInput";
 import ChatReply from "./components/ChatReply";
+import TopBanner from "./components/TopBanner";
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
 
   return (
+    <div className="w-full min-h-screen flex flex-col">
+      <TopBanner />
 
     <div className="items-center object-cover rounded-lg w-full min-h-screen flex flex-col mt-05">
       <Image
@@ -24,6 +27,7 @@ export default function Home() {
         <ChatReply messages={messages} /> {/*TODO: Van ChatReply naar Chat hernoemen, want user chats en replies wordt hier behandeld*/}
       </div>
       <UserInput setMessages={setMessages}/>
+    </div>
     </div>
   );
 }
