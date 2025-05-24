@@ -46,6 +46,7 @@ export default function UserInput({ setMessages }) {
             e.preventDefault();
             handleSubmit(e);
         }
+        
     }
 
     return (<div className="fixed bottom-6 w-full flex justify-center px-4">
