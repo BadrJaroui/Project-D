@@ -1,45 +1,46 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
-export default function UploadPDF() {
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("");
+export default function FileUploader() {
+  const [file, setFile] = useState(null)
+  const [status, setStatus] = useState('')
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!file) return
 
-    const formData = new FormData();
-    formData.append("pdf", file);
+    const formData = new FormData()
+    formData.append('file', file)
 
     try {
-      setUploading(true);
-      const res = await fetch("/api/upload", {
-        method: "POST",
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer YOUR_API_KEY',
+        },
         body: formData,
-      });
+      })
 
-      const data = await res.json();
-      setMessage(data.message || "Upload complete!");
+      const data = await res.json()
+      setStatus(`Success: ${JSON.stringify(data)}`)
     } catch (err) {
-      console.error(err);
-      setMessage("Upload failed.");
-    } finally {
-      setUploading(false);
+      console.error(err)
+      setStatus('Error uploading file')
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col items-center mb-4">
+    <form onSubmit={handleSubmit} className="p-4">
       <input
         type="file"
-        accept="application/pdf"
-        onChange={handleFileChange}
+        onChange={(e) => setFile(e.target.files?.[0] || null)}
         className="mb-2"
       />
-      {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
-      {message && <p className="text-sm text-green-600">{message}</p>}
-    </div>
-  );
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        Upload
+      </button>
+      {status && <p className="mt-2">{status}</p>}
+    </form>
+  )
 }
