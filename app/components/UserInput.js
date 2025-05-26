@@ -1,15 +1,18 @@
 import { useState, useRef } from "react";
+import { useBreathing } from "./BreathingContext";
 
-export default function UserInput({ setMessages }) {
+export default function UserInput({ setMessages, setShowIntro }) {
   const [messageInput, setMessageInput] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const { setBackgroundPulse } = useBreathing();
 
-  // Submit chat message handler (your existing code)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setBackgroundPulse(true);
     const userMessage = messageInput.trim();
     if (!userMessage) return;
+
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setMessageInput("");
 
@@ -45,9 +48,9 @@ export default function UserInput({ setMessages }) {
         return updated;
       });
     }
+    setBackgroundPulse(false);
   };
 
-  // Handle Enter key send message
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -55,14 +58,16 @@ export default function UserInput({ setMessages }) {
     }
   };
 
-  // Handle paperclip button click - triggers hidden file input click
+  const handleFocus = () => {
+    if (setShowIntro) setShowIntro(false);
+  };
+
   const handlePaperclipClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // Upload file handler
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -72,29 +77,25 @@ export default function UserInput({ setMessages }) {
     const formData = new FormData();
     formData.append("file", file);
 
-    // Add a message to show uploading status
+    // Show uploading status
     setMessages((prev) => [
       ...prev,
       { role: "bot", content: `Uploading file "${file.name}"...` },
     ]);
-    const uploadMsgIndex = (prevLength => prevLength)(setMessages.length || 0);
 
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
-          // Do NOT set Content-Type manually with FormData!
         },
         body: formData,
       });
 
       const data = await res.json();
 
-      // Replace the uploading message with success message
       setMessages((prev) => {
         const updated = [...prev];
-        // Find last bot message containing 'Uploading file'
         const idx = updated.findIndex(
           (m, i) =>
             m.role === "bot" &&
@@ -128,13 +129,12 @@ export default function UserInput({ setMessages }) {
       });
     } finally {
       setUploading(false);
-      // Reset the file input so same file can be uploaded again if needed
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   return (
-    <div className="fixed bottom-6 w-full flex justify-center px-4">
+    <div className="fixed bottom-6 w-full flex justify-center px-4 z-10">
       <form
         onSubmit={handleSubmit}
         className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111] flex items-center gap-2"
@@ -148,7 +148,7 @@ export default function UserInput({ setMessages }) {
           disabled={uploading}
         />
 
-        {/* Circle Upload Button */}
+        {/* Upload Button */}
         <div
           onClick={handlePaperclipClick}
           className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full text-white cursor-pointer hover:bg-blue-600"
@@ -157,11 +157,12 @@ export default function UserInput({ setMessages }) {
           <img src="paperclip.png" alt="Paperclip Icon" className="w-4 h-4" />
         </div>
 
-        {/* Text Input */}
+        {/* Textarea */}
         <textarea
           placeholder="Ask away!"
           rows={1}
           value={messageInput}
+          onFocus={handleFocus}
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={handleKeyDown}
           className="flex-1 resize-none bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
