@@ -28,7 +28,7 @@ export async function POST(req) {
   const openwebuiRes = await fetch('http://localhost:3000/api/v1/files/', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer KEY',
+      'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
     },
     body: openwebuiFormData,
   })
