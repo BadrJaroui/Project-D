@@ -36,3 +36,27 @@ body {
 .no-scrollbar {
   scrollbar-width: none;
 }
+/* Intromessage gradient effect*/
+@keyframes gradient-wave-to-white {
+  0% {
+    background-position: 200% 0%;
+  }
+  80% {
+    background-position: -200% 0%;
+    color: transparent;
+  }
+  100% {
+    background-position: -200% 0%;
+    color: white; 
+  }
+}
+
+.animate-gradient-wave-to-white {
+  animation: gradient-wave-to-white 5s ease-out forwards;
+  background-image: linear-gradient(to right, white, #f15a22, white);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
