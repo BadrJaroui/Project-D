@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useBreathing } from "./BreathingContext";
 
-export default function UserInput({ setMessages , setShowIntro}) {
+export default function UserInput({ setMessages, setShowIntro }) {
     const [messageInput, setMessageInput] = useState("");
+    const { setBackgroundPulse } = useBreathing();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setBackgroundPulse(true);
         const userMessage = messageInput.trim();
         if (!userMessage) return;
         setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
@@ -39,6 +42,7 @@ export default function UserInput({ setMessages , setShowIntro}) {
                 return updated;
             });
         }
+        setBackgroundPulse(false);
     };
 
     const handleFocus = () => {

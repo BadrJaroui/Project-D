@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import BreathingBackground from "./components/BreathingBackground";
+import { BreathingProvider } from "./components/BreathingContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <BreathingBackground>{children}</BreathingBackground>
+        <BreathingProvider>{children}</BreathingProvider>
       </body>
     </html>
   );
