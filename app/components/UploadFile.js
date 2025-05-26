@@ -17,7 +17,7 @@ export default function FileUploader() {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer YOUR_API_KEY',
+          Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
         },
         body: formData,
       })

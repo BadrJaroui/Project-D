@@ -83,7 +83,7 @@ export default function UserInput({ setMessages }) {
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: {
-          Authorization: "Bearer YOUR_API_KEY",
+          Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
           // Do NOT set Content-Type manually with FormData!
         },
         body: formData,
