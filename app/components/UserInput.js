@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useBreathing } from "./BreathingContext";
 
-export default function UserInput({ setMessages }) {
+export default function UserInput({ setMessages, setShowIntro }) {
     const [messageInput, setMessageInput] = useState("");
+    const { setBackgroundPulse } = useBreathing();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setBackgroundPulse(true);
         const userMessage = messageInput.trim();
         if (!userMessage) return;
         setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
@@ -16,7 +19,7 @@ export default function UserInput({ setMessages }) {
             placeholderIndex = prev.length;
             return [...prev, placeholder];
         });
-    
+
         try {
             const res = await fetch("/api/chat",
                 {
@@ -27,7 +30,7 @@ export default function UserInput({ setMessages }) {
             const data = await res.json();
             setMessages((prev) => {
                 const updated = [...prev];
-                
+
                 updated[placeholderIndex] = { role: "bot", content: data.reply };
                 return updated;
             });
@@ -35,26 +38,31 @@ export default function UserInput({ setMessages }) {
         catch (error) {
             setMessages((prev) => {
                 const updated = [...prev];
-                updated[placeholderIndex] = { role: "bot", content: "Something went wrong!"};
+                updated[placeholderIndex] = { role: "bot", content: "Something went wrong!" };
                 return updated;
             });
         }
+        setBackgroundPulse(false);
     };
 
+    const handleFocus = () => {
+        setShowIntro(false);
+    };
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             handleSubmit(e);
         }
-        
+
     }
 
-    return (<div className="fixed bottom-6 w-full flex justify-center px-4">
+    return (<div className="w-full flex justify-center px-4 bp-4 z-10">
         <form onSubmit={handleSubmit} className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111]">
             <textarea
                 type="text"
                 placeholder="Ask away!"
                 value={messageInput}
+                onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
                 onChange={(e) => setMessageInput(e.target.value)}
                 rows={1}
