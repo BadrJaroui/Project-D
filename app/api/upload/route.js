@@ -38,13 +38,16 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to upload to OpenWebUI', details: errorBody }, { status: 500 })
   }
 
+  // Saves file ID to use for adding to collection
   const openwebuiResponseData = await openwebuiRes.json()
   const fileID = openwebuiResponseData.id
+
     if (!fileID) {
       return NextResponse.json({ error: 'No file ID returned from OpenWebUI' }, { status: 500 })
     }
 
-  const knowledgeId = '11be8f2a-c02c-4301-8333-179c66eeea83' // Replace with your real collection ID
+  // Adds file ID to collection
+  const knowledgeId = '11be8f2a-c02c-4301-8333-179c66eeea83' // Collection ID contained in collection URL
   const addToCollectionRes = await fetch(`http://localhost:3000/api/v1/knowledge/${knowledgeId}/file/add`, {
     method: 'POST',
     headers: {
@@ -64,6 +67,7 @@ export async function POST(req) {
   // Check if sending file is successful
   console.log('OpenWebUI response:', openwebuiResponseData)
 
+  // Returns json information regarding uploaded file
   return NextResponse.json({
     message: 'File uploaded successfully',
     filename,

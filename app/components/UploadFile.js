@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function FileUploader() {
+export default function UploadFile() {
   const [file, setFile] = useState(null)
   const [status, setStatus] = useState('')
 
@@ -13,11 +13,12 @@ export default function FileUploader() {
     const formData = new FormData()
     formData.append('file', file)
 
+    // Sends request to endpoint to upload file
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
+        Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
         },
         body: formData,
       })
