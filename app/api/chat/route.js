@@ -105,7 +105,7 @@ export async function POST(request) {
     const data = await response.json();
     console.log("Response from OpenWebUI API:", data);
 
-    // 5. API Response Data Structure: Check if the expected content exists
+    // 5. API Response Data Structure: Check if the expected content exists.
     const replyContent = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
 
     if (!replyContent) {
