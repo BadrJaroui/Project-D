@@ -6,12 +6,21 @@ export default function UserInput({ setMessages, setShowIntro }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
   const { setBackgroundPulse } = useBreathing();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setBackgroundPulse(true);
+
+    if (isLoading || uploading) return;
+    setIsLoading(true);
+
     const userMessage = messageInput.trim();
-    if (!userMessage) return;
+    if (!userMessage)
+    {
+      setIsLoading(false);
+      return;
+    }
 
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setMessageInput("");
@@ -49,6 +58,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
       });
     }
     setBackgroundPulse(false);
+    setIsLoading(false);
   };
 
   const handleKeyDown = (e) => {
@@ -165,14 +175,14 @@ export default function UserInput({ setMessages, setShowIntro }) {
           onFocus={handleFocus}
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 resize-none bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
+          className="flex-1 resize-none overflow-auto no-scrollbar bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
           disabled={uploading}
         />
 
         {/* Send Button */}
         <button
           type="submit"
-          disabled={uploading}
+          disabled={uploading || isLoading}
           className="absolute bottom-1 right-1 bg-blue-500 text-white px-3 py-1 text-sm rounded-bl-none rounded-lg shadow-sm hover:bg-blue-600 disabled:opacity-50"
         >
           Send
