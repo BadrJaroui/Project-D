@@ -27,7 +27,7 @@ export default function FileUploader() {
       })
 
       const data = await res.json() 
-      setStatus(`Success: ${JSON.stringify(data)}`)
+      setStatus(`File successfully added`)
       e.target.reset();
       setFile(null);
     } catch (err) {
@@ -64,7 +64,8 @@ export default function FileUploader() {
          </button>
          
         </form>
-        {file && (<p className="p-2 text-black rounded-2xl font-semibold border border-black/50 shadow-inner mt-1">Selected file: <span >{file.name}</span> </p>)}    
+        {file && (<p className="p-2 text-black rounded-2xl font-semibold border border-black/50 shadow-inner mt-1">Selected file: <span >{file.name}</span> </p>)} 
+        {status && <p className="p-2 text-black rounded-2xl font-semibold border border-black/50 shadow-inner mt-1">{status}</p>}   
         
   
       </div>
