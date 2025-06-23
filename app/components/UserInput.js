@@ -1,17 +1,22 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useBreathing } from "./BreathingContext";
 
 export default function UserInput({ setMessages, setShowIntro }) {
   const [messageInput, setMessageInput] = useState("");
   const [uploading, setUploading] = useState(false);
+  // Add a new state for chat message loading
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { setBackgroundPulse } = useBreathing();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setBackgroundPulse(true);
     const userMessage = messageInput.trim();
     if (!userMessage) return;
+
+    // Set isLoading to true at the start of the submission
+    setIsLoading(true);
+    setBackgroundPulse(true);
 
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setMessageInput("");
@@ -47,12 +52,16 @@ export default function UserInput({ setMessages, setShowIntro }) {
         };
         return updated;
       });
+    } finally {
+      // Set isLoading to false when the submission is complete (success or error)
+      setIsLoading(false);
+      setBackgroundPulse(false);
     }
-    setBackgroundPulse(false);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    // Disable sending with Enter key if loading or uploading
+    if (e.key === "Enter" && !e.shiftKey && !isLoading && !uploading) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -72,7 +81,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
+    setUploading(true); // `uploading` state is already well-defined for file uploads
 
     const formData = new FormData();
     formData.append("file", file);
@@ -100,7 +109,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1
+            i === updated.length - 1,
         );
         if (idx !== -1) {
           updated[idx] = {
@@ -117,7 +126,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1
+            i === updated.length - 1,
         );
         if (idx !== -1) {
           updated[idx] = {
@@ -145,17 +154,9 @@ export default function UserInput({ setMessages, setShowIntro }) {
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden"
-          disabled={uploading}
+          // Disable file input if currently uploading or submitting a chat message
+          disabled={uploading || isLoading}
         />
-
-        {/* Upload Button */}
-        <div
-          onClick={handlePaperclipClick}
-          className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full text-white cursor-pointer hover:bg-blue-600"
-          title="Upload file"
-        >
-          <img src="paperclip.png" alt="Paperclip Icon" className="w-4 h-4" />
-        </div>
 
         {/* Textarea */}
         <textarea
@@ -165,14 +166,16 @@ export default function UserInput({ setMessages, setShowIntro }) {
           onFocus={handleFocus}
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 resize-none bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
-          disabled={uploading}
+          className="flex-1 resize-none overflow-auto no-scrollbar bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
+          // Disable textarea if currently uploading or submitting a chat message
+          disabled={uploading || isLoading}
         />
 
         {/* Send Button */}
         <button
           type="submit"
-          disabled={uploading}
+          // Disable send button if currently uploading or submitting a chat message
+          disabled={uploading || isLoading}
           className="absolute bottom-1 right-1 bg-blue-500 text-white px-3 py-1 text-sm rounded-bl-none rounded-lg shadow-sm hover:bg-blue-600 disabled:opacity-50"
         >
           Send
