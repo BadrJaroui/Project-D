@@ -12,22 +12,28 @@ export default function TopBanner() {
         </span>
       </div>
       <nav className="hidden md:flex space-x-6 text-sm text-gray-500 dark:text-gray-300 items-center">
-        <a
-          href="https://www.ndw.nu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#f15a22]"
-        >
-          NDW Website
-        </a>
-        <a
-          href="https://www.ndw.nu/contact"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-gray-900 dark:hover:text-white transition"
-        >
-          Contact
-        </a>
+        <div className="group relative">
+          <a
+            href="https://www.ndw.nu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#f15a22]"
+          >
+            NDW Website
+          </a>
+          <div className="nav-underline"></div>
+        </div>
+        <div className="group relative">
+          <a
+            href="https://www.ndw.nu/contact"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-gray-900 dark:hover:text-white transition"
+          >
+            Contact
+          </a>
+          <div className="nav-underline"></div>
+        </div>
         <HamburgerMenu />
       </nav>
     </div>

@@ -140,6 +140,23 @@ body {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Navigation underline styling */
+.nav-underline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #8b1e3f;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s;
+}
+
+.group:hover .nav-underline {
+  transform: scaleX(1);
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
