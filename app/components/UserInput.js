@@ -158,15 +158,6 @@ export default function UserInput({ setMessages, setShowIntro }) {
           disabled={uploading}
         />
 
-        {/* Upload Button */}
-        <div
-          onClick={handlePaperclipClick}
-          className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full text-white cursor-pointer hover:bg-blue-600"
-          title="Upload file"
-        >
-          <img src="paperclip.png" alt="Paperclip Icon" className="w-4 h-4" />
-        </div>
-
         {/* Textarea */}
         <textarea
           placeholder="Ask away!"
