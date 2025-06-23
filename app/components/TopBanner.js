@@ -13,7 +13,7 @@ export default function TopBanner() {
                 <a href="https://www.ndw.nu" target="_blank" rel="noopener noreferrer" className="text-[#f15a22]">NDW Website</a>
                 <Link href="/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Chat</Link>
                 <a href="https://www.ndw.nu/contact" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Contact</a>
-                <Link href ="/uploadpage" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Upload File</Link>
+                <Link href ="/loginPage" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Upload File</Link>
             </nav>
         </div>
     );
