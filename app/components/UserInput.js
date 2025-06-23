@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useBreathing } from "./BreathingContext";
 
 export default function UserInput({ setMessages, setShowIntro }) {
@@ -109,7 +109,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1
+            i === updated.length - 1,
         );
         if (idx !== -1) {
           updated[idx] = {
@@ -126,7 +126,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1
+            i === updated.length - 1,
         );
         if (idx !== -1) {
           updated[idx] = {
