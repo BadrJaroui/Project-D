@@ -6,21 +6,12 @@ export default function UserInput({ setMessages, setShowIntro }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
   const { setBackgroundPulse } = useBreathing();
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setBackgroundPulse(true);
-
-    if (isLoading || uploading) return;
-    setIsLoading(true);
-
     const userMessage = messageInput.trim();
-    if (!userMessage)
-    {
-      setIsLoading(false);
-      return;
-    }
+    if (!userMessage) return;
 
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setMessageInput("");
@@ -58,7 +49,6 @@ export default function UserInput({ setMessages, setShowIntro }) {
       });
     }
     setBackgroundPulse(false);
-    setIsLoading(false);
   };
 
   const handleKeyDown = (e) => {
