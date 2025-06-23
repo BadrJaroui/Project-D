@@ -5,7 +5,7 @@ export async function POST(request) {
 
     const { username, password } = await request.json();
 
-    if (username === 'admin' && password === 'admin123') {
+    if (username == process.env.USERNAME && password == process.env.PASSWORD) {
       return new Response(
         JSON.stringify({ success: true, message: 'Login successful' }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
