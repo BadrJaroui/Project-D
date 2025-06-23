@@ -4,14 +4,19 @@ import { useBreathing } from "./BreathingContext";
 export default function UserInput({ setMessages, setShowIntro }) {
   const [messageInput, setMessageInput] = useState("");
   const [uploading, setUploading] = useState(false);
+  // Add a new state for chat message loading
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { setBackgroundPulse } = useBreathing();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setBackgroundPulse(true);
     const userMessage = messageInput.trim();
     if (!userMessage) return;
+
+    // Set isLoading to true at the start of the submission
+    setIsLoading(true);
+    setBackgroundPulse(true);
 
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setMessageInput("");
@@ -47,12 +52,16 @@ export default function UserInput({ setMessages, setShowIntro }) {
         };
         return updated;
       });
+    } finally {
+      // Set isLoading to false when the submission is complete (success or error)
+      setIsLoading(false);
+      setBackgroundPulse(false);
     }
-    setBackgroundPulse(false);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    // Disable sending with Enter key if loading or uploading
+    if (e.key === "Enter" && !e.shiftKey && !isLoading && !uploading) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -72,7 +81,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
+    setUploading(true); // `uploading` state is already well-defined for file uploads
 
     const formData = new FormData();
     formData.append("file", file);
@@ -145,7 +154,8 @@ export default function UserInput({ setMessages, setShowIntro }) {
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden"
-          disabled={uploading}
+          // Disable file input if currently uploading or submitting a chat message
+          disabled={uploading || isLoading}
         />
 
         {/* Textarea */}
@@ -157,12 +167,14 @@ export default function UserInput({ setMessages, setShowIntro }) {
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={handleKeyDown}
           className="flex-1 resize-none overflow-auto no-scrollbar bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
-          disabled={uploading}
+          // Disable textarea if currently uploading or submitting a chat message
+          disabled={uploading || isLoading}
         />
 
         {/* Send Button */}
         <button
           type="submit"
+          // Disable send button if currently uploading or submitting a chat message
           disabled={uploading || isLoading}
           className="absolute bottom-1 right-1 bg-blue-500 text-white px-3 py-1 text-sm rounded-bl-none rounded-lg shadow-sm hover:bg-blue-600 disabled:opacity-50"
         >
