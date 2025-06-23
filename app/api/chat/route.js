@@ -4,7 +4,6 @@ export async function POST(request) {
 
     console.log(message);
 
-    // 1. Input Validation: Check if the 'message' is provided
     if (!message || typeof message !== 'string' || message.trim() === '') {
       return new Response(
         JSON.stringify({ error: "Bad Request: 'message' is required and must be a non-empty string." }),
@@ -12,7 +11,6 @@ export async function POST(request) {
       );
     }
 
-    // 2. API Key Presence: Ensure the bearer token is set
     const bearerToken = process.env.BEARER_TOKEN;
     if (!bearerToken) {
       console.error("Server Error: BEARER_TOKEN environment variable is not set.");
@@ -22,7 +20,13 @@ export async function POST(request) {
       );
     }
 
-    // Build the payload as required by the OpenWebUI API
+
+    const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!slackWebhookUrl) {
+      console.error("Server Error: SLACK_WEBHOOK_URL environment variable is not set.");
+
+    }
+
     const payload = {
       model: "gemma3:latest",
       messages: [
@@ -50,34 +54,38 @@ export async function POST(request) {
         body: JSON.stringify(payload),
       });
     } catch (fetchError) {
-      // 3. Network/Fetch Errors: Catch errors during the fetch operation (e.g., network down, incorrect URL)
+
       console.error(`Network or Fetch Error contacting OpenWebUI API at ${openWebUiApiUrl}:`, fetchError);
+
+      if (slackWebhookUrl) {
+        await sendSlackNotification(slackWebhookUrl, ` Error contacting OpenWebUI API: ${fetchError.message}\nUser message: \`${message}\``);
+      }
       return new Response(
         JSON.stringify({ error: `Failed to connect to the OpenWebUI API. Please check the server status and URL. Details: ${fetchError.message}` }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Log the response status and potentially the raw body for debugging
+
     console.log(`OpenWebUI API Response Status: ${response.status} ${response.statusText}`);
 
-    // 4. API Response Errors: Handle non-2xx HTTP statuses
+
     if (!response.ok) {
       let errorData = {};
+      let errorMessageForSlack = `OpenWebUI API Error: ${response.status} ${response.statusText}`;
       try {
-        // Attempt to parse JSON error from the API
         errorData = await response.json();
+        errorMessageForSlack += `. Details: ${errorData.detail || JSON.stringify(errorData)}`;
         console.error("OpenWebUI API returned an error:", errorData);
       } catch (jsonParseError) {
-        // If parsing fails, it might not be a JSON error response
         console.error("OpenWebUI API returned non-JSON error response:", await response.text());
-        return new Response(
-          JSON.stringify({ error: `OpenWebUI API error: ${response.status} ${response.statusText}. No detailed error message from API.` }),
-          { status: response.status, headers: { 'Content-Type': 'application/json' } }
-        );
+        errorMessageForSlack += `. No detailed error message from API (non-JSON response).`;
       }
 
-      // Provide more specific error messages based on the API's response
+      if (slackWebhookUrl) {
+        await sendSlackNotification(slackWebhookUrl, ` ${errorMessageForSlack}\nUser message: \`${message}\``);
+      }
+
       if (response.status === 401) {
         return new Response(
           JSON.stringify({ error: "Unauthorized: Invalid or expired API key provided to OpenWebUI API." }),
@@ -94,7 +102,6 @@ export async function POST(request) {
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       } else {
-        // Generic API error
         return new Response(
           JSON.stringify({ error: `OpenWebUI API error: ${response.status} ${response.statusText}. Details: ${errorData.detail || JSON.stringify(errorData)}` }),
           { status: response.status, headers: { 'Content-Type': 'application/json' } }
@@ -105,15 +112,23 @@ export async function POST(request) {
     const data = await response.json();
     console.log("Response from OpenWebUI API:", data);
 
-    // 5. API Response Data Structure: Check if the expected content exists.
     const replyContent = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
 
     if (!replyContent) {
       console.warn("OpenWebUI API response did not contain expected content:", data);
+      if (slackWebhookUrl) {
+        await sendSlackNotification(slackWebhookUrl, ` OpenWebUI API returned success but no content.\nUser message: \`${message}\`\nAPI Response: \`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``);
+      }
       return new Response(
         JSON.stringify({ error: "OpenWebUI API returned a successful response, but no content was found in the expected format." }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+
+    if (slackWebhookUrl) {
+      const slackMessage = `🗣️ *User Query:* ${message}\n🤖 *AI Reply:* ${replyContent}`;
+      await sendSlackNotification(slackWebhookUrl, slackMessage);
     }
 
     return new Response(
@@ -122,11 +137,33 @@ export async function POST(request) {
     );
 
   } catch (overallError) {
-    // Catch any unexpected errors that weren't handled by specific try/catch blocks
     console.error("An unexpected error occurred in POST function:", overallError);
+    if (process.env.SLACK_WEBHOOK_URL) {
+      await sendSlackNotification(process.env.SLACK_WEBHOOK_URL, ` An unexpected server error occurred: ${overallError.message}`);
+    }
     return new Response(
       JSON.stringify({ error: `An unexpected server error occurred: ${overallError.message}` }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
+  }
+}
+
+/**
+ * @param {string} webhookUrl 
+ * @param {string} text 
+ */
+
+async function sendSlackNotification(webhookUrl, text) {
+  try {
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+    console.log("Slack notification sent successfully.");
+  } catch (slackError) {
+    console.error("Failed to send Slack notification:", slackError);
   }
 }
