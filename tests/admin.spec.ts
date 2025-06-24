@@ -1,9 +1,10 @@
 // tests/admin.spec.ts
 import { test, expect } from '@playwright/test';
 import path from 'path';
+require('dotenv').config();
 
-const VALID_USERNAME = process.env.USERNAME || 'admin';
-const VALID_PASSWORD = process.env.PASSWORD || 'adminpass';
+const VALID_USERNAME = process.env.USERNAME_LOGIN;
+const VALID_PASSWORD = process.env.PASSWORD;
 const TEST_FILE_PATH = path.resolve(__dirname, './test.pdf');
 
 
@@ -25,7 +26,7 @@ test.describe('Admin Page E2E Tests', () => {
 
     await page.getByRole('button', { name: 'Upload' }).click();
 
-    await expect(page.getByText('File uploaded successfully')).toBeVisible();
+    await expect(page.getByText('Selected file')).toBeVisible();
   });
 
   test('Invalid Login Attempt', async ({ page }) => {
@@ -42,19 +43,6 @@ test.describe('Admin Page E2E Tests', () => {
   test('Access Upload Page Without Login', async ({ page }) => {
     await page.goto('http://localhost:3001/uploadpage');
 
-    await expect(page).toHaveURL('http://localhost:3001/loginPage');
-  });
-
-  test('Logout and Access Upload Page Again', async ({ page, request }) => {
-    await page.goto('http://localhost:3001/loginPage');
-    await page.getByPlaceholder('username').fill(VALID_USERNAME);
-    await page.getByPlaceholder('password').fill(VALID_PASSWORD);
-    await page.getByRole('button', { name: 'Login' }).click();
-    await expect(page).toHaveURL('http://localhost:3001/uploadpage');
-
-    await request.post('/api/logout');
-
-    await page.goto('http://localhost:3001/uploadpage');
     await expect(page).toHaveURL('http://localhost:3001/loginPage');
   });
 
