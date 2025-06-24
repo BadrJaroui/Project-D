@@ -109,7 +109,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1,
+            i === updated.length - 1
         );
         if (idx !== -1) {
           updated[idx] = {
@@ -126,7 +126,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           (m, i) =>
             m.role === "bot" &&
             m.content.startsWith("Uploading file") &&
-            i === updated.length - 1,
+            i === updated.length - 1
         );
         if (idx !== -1) {
           updated[idx] = {
@@ -146,7 +146,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
     <div className="fixed bottom-6 w-full flex justify-center px-4 z-10">
       <form
         onSubmit={handleSubmit}
-        className="relative border border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-[#111] flex items-center gap-2"
+        className="relative border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 w-full max-w-[700px] bg-white dark:bg-[#111] flex items-center gap-2"
       >
         {/* Hidden File Input */}
         <input
@@ -166,7 +166,7 @@ export default function UserInput({ setMessages, setShowIntro }) {
           onFocus={handleFocus}
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 resize-none overflow-auto no-scrollbar bg-transparent text-white placeholder-gray-400 focus:outline-none pr-16 text-base"
+          className="flex-1 resize-none overflow-auto no-scrollbar bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none pr-16 text-base"
           // Disable textarea if currently uploading or submitting a chat message
           disabled={uploading || isLoading}
         />

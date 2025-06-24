@@ -30,6 +30,12 @@ export default function FileUploader() {
     checkAuthStatus();
   }, [router]);
 
+  useEffect(() => {
+    if (file && status === "Please select a file first.") {
+      setStatus("");
+    }
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -56,7 +62,9 @@ export default function FileUploader() {
           setStatus("Unauthorized. Please log in again.");
           router.replace("/loginPage");
         } else {
-          setStatus(`Error uploading file: ${errorData.message || res.statusText}`);
+          setStatus(
+            `Error uploading file: ${errorData.message || res.statusText}`
+          );
         }
       }
     } catch (err) {
@@ -77,8 +85,8 @@ export default function FileUploader() {
       <TopBanner />
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="p-11 rounded-2xl bg-white">
-          <div className="flex text-black font-semibold justify-left">
+        <div className="p-11 rounded-2xl bg-white dark:bg-black">
+          <div className="flex text-black dark:text-white font-semibold justify-left">
             Upload files (PDF)
           </div>
 
@@ -103,12 +111,12 @@ export default function FileUploader() {
             </button>
           </form>
           {file && (
-            <p className="p-2 text-black rounded-2xl font-semibold border border-black/50 shadow-inner mt-1">
+            <p className="p-2 text-black dark:text-white rounded-2xl font-semibold border border-black/50 dark:border-white/50 shadow-inner mt-1">
               Selected file: <span>{file.name}</span>
             </p>
           )}
           {status && (
-            <p className="p-2 text-black rounded-2xl font-semibold border border-black/50 shadow-inner mt-1">
+            <p className="p-2 text-black dark:text-white rounded-2xl font-semibold border border-black/50 dark:border-white/50 shadow-inner mt-1">
               {status}
             </p>
           )}

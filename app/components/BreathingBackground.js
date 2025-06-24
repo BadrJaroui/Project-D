@@ -5,13 +5,21 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
 import gsap from "gsap";
+import { useTheme } from "next-themes";
 
 const BreathingBackground = forwardRef(({ children }, ref) => {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const gradientRef = useRef(null);
   const circleRef = useRef(null);
   const breathingRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     breathingRef.current = gsap.to(circleRef.current, {
@@ -33,30 +41,36 @@ const BreathingBackground = forwardRef(({ children }, ref) => {
   }));
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black">
-      <svg
-        className="absolute top-0 left-0 w-full h-full z-0"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <radialGradient id="sphereGradientv2" ref={gradientRef}>
-            <stop offset="0%" stopColor="#222222" />
-            <stop offset="100%" stopColor="#000000" />
-          </radialGradient>
-        </defs>
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-black transition-all duration-300">
+      {mounted && resolvedTheme && (
+        <svg
+          className="absolute top-0 left-0 w-full h-full z-0"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <radialGradient id="sphereGradientv2" ref={gradientRef}>
+              <stop
+                offset="0%"
+                stopColor={resolvedTheme === "dark" ? "#222222" : "#e0e0e0"}
+              />
+              <stop
+                offset="100%"
+                stopColor={resolvedTheme === "dark" ? "#000000" : "#ffffff"}
+              />
+            </radialGradient>
+          </defs>
 
-        <circle
-          ref={circleRef}
-          cx="50"
-          cy="50"
-          r="30"
-          fill="url(#sphereGradientv2)"
-        />
-      </svg>
-      <div className="relative z-10">
-        {children}
-      </div>
+          <circle
+            ref={circleRef}
+            cx="50"
+            cy="50"
+            r="30"
+            fill="url(#sphereGradientv2)"
+          />
+        </svg>
+      )}
+      <div className="relative z-10">{children}</div>
     </div>
   );
 });

@@ -1,16 +1,14 @@
-// page.js (your login client component)
 "use client";
 
 import { useState } from "react";
 import TopBanner from "../components/TopBanner";
 import { useRouter } from "next/navigation";
 
-// No need for dotenv.config() in client-side code
-
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [showLogin, setShowLogin] = useState(true); // NEW
 
   const router = useRouter();
 
@@ -43,49 +41,56 @@ export default function Login() {
       <TopBanner />
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="p-11 rounded-2xl bg-white">
-          <div className="flex text-black font-semibold justify-left">
-            Admin login
-          </div>
-
-          <form
-            onSubmit={handleLogin}
-            className="flex flex-col items-center space-y-4 p-4 "
-          >
-            <input
-              type="text"
-              placeholder="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="  text-[#949494] px-8 py-4 border rounded-xl"
+        {showLogin && (
+          <div className="relative p-11 rounded-2xl bg-white dark:bg-black">
+            {/* Close Button */}
+            <button
+              onClick={() => router.push("/")}
+              className="absolute top-2 right-3 text-black dark:text-white text-xl font-bold"
+              aria-label="Close"
             >
-            </input>
+              ×
+            </button>
 
-            <input
-              type="password"
-              placeholder="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="  text-[#949494] px-8 py-4 border rounded-xl"
+            <div className="flex text-black dark:text-white font-semibold justify-left mb-2">
+              Admin login
+            </div>
+
+            <form
+              onSubmit={handleLogin}
+              className="flex flex-col items-center space-y-4 p-4"
             >
-            </input>
+              <input
+                type="text"
+                placeholder="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="text-[#949494] px-8 py-4 border rounded-xl"
+              />
 
-            <div className="space-y-5    ">
+              <input
+                type="password"
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="text-[#949494] px-8 py-4 border rounded-xl"
+              />
+
               <button
                 type="submit"
-                className="flex bg-[#f15a22] hover:bg-blue-500 text-white px-8 py-4 rounded-xl justify-center"
+                className="bg-[#f15a22] hover:bg-blue-500 text-white px-8 py-4 rounded-xl"
               >
                 Login
               </button>
-            </div>
-          </form>
+            </form>
 
-          {loginError && (
-            <p className="p-2 text-black rounded-xl border border-black/50 shadow-inner mt-1">
-              <span>{loginError}</span>
-            </p>
-          )}
-        </div>
+            {loginError && (
+              <p className="p-2 text-black dark:text-white rounded-xl border border-black/50 dark:border-white/50 shadow-inner mt-1">
+                <span>{loginError}</span>
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
