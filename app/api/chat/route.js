@@ -45,7 +45,7 @@ export async function POST(request) {
       ],
       stream: false,
       files: [
-        { "type": "collection", "id": "1868dae2-e210-44f5-8b85-044d39a2de3c" },
+        { "type": "collection", "id": "7cdcece0-c361-49ba-8774-6d5b1be67c3d" },
       ],
     };
 

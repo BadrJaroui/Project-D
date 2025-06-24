@@ -5,7 +5,7 @@ export async function POST(request) {
     const { username, password } = await request.json();
 
     if (
-      username === process.env.USERLOGIN &&
+      username === process.env.USERNAME_LOGIN &&
       password === process.env.PASSWORD
     ) {
       const payload = { userId: "admin", username: username };

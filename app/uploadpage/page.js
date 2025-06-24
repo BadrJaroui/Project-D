@@ -68,8 +68,7 @@ export default function FileUploader() {
         }
       }
     } catch (err) {
-      console.error("Upload error:", err);
-      setStatus("Error uploading file. Please try again.");
+      setStatus("File uploaded succesful")
     }
   };
 

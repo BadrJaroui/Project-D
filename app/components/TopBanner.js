@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import HamburgerMenu from "./HamburgerMenu";
+import { Ham } from "lucide-react";
 
 export default function TopBanner() {
   const router = useRouter();
@@ -51,63 +52,63 @@ export default function TopBanner() {
           Nationaal Dataportaal Wegverkeer
         </span>
       </div>
-      <div className="flex items-center space-x-4">
-        <nav className="hidden md:flex space-x-6 text-sm text-gray-700 dark:text-gray-300 transition-all duration-300">
+      <nav className="items-center hidden md:flex space-x-6 text-sm text-gray-600 dark:text-gray-300 transition-all duration-300">
+        <div className="relative group">
           <a
             href="https://www.ndw.nu"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#f15a22] group relative"
+            className="text-[#f15a22]"
           >
             NDW Website
-            <span className="nav-underline"></span>
           </a>
-          <Link
-            href="/"
-            rel="noopener noreferrer"
-            className="hover:text-gray-950 dark:hover:text-white transition group relative"
-          >
-            Chat
-            <span className="nav-underline"></span>
-          </Link>
+          <span className="nav-underline"></span>
+        </div>
+        <div className="relative group">
           <a
             href="https://www.ndw.nu/contact"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-gray-950 dark:hover:text-white transition group relative"
+            className="dark:hover:text-white hover:text-gray-900 transition-all duration-300"
           >
             Contact
-            <span className="nav-underline"></span>
           </a>
-          {isClientAuthenticated ? (
-            <>
+          <span className="nav-underline"></span>
+        </div>
+        {isClientAuthenticated ? (
+          <>
+            <div className="relative group">
               <Link
                 href="/uploadpage"
-                className="hover:text-gray-950 dark:hover:text-white transition group relative"
+                className="dark:hover:text-white hover:text-gray-900 transition-all duration-300"
               >
                 Upload
-                <span className="nav-underline"></span>
               </Link>
+              <span className="nav-underline"></span>
+            </div>
+            <div className="relative group">
               <button
                 onClick={handleLogout}
-                className="hover:text-gray-950 dark:hover:text-white transition group relative"
+                className="dark:hover:text-white hover:text-gray-900 transition-all duration-300"
               >
                 Logout
-                <span className="nav-underline"></span>
               </button>
-            </>
-          ) : (
+              <span className="nav-underline"></span>
+            </div>
+          </>
+        ) : (
+          <div className="relative group">
             <Link
               href="/loginPage"
-              className="hover:text-gray-950 dark:hover:text-white transition group relative"
+              className="dark:hover:text-white hover:text-gray-900 transition-all duration-300"
             >
               Login
-              <span className="nav-underline"></span>
             </Link>
-          )}
-        </nav>
+            <span className="nav-underline"></span>
+          </div>
+        )}
         <HamburgerMenu />
-      </div>
+      </nav>
     </div>
   );
 }
