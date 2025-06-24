@@ -41,6 +41,16 @@ export async function POST(req) {
     }, { status: 500 });
   }
 
+  const knowledgeId = '11be8f2a-c02c-4301-8333-179c66eeea83'; // Example collection ID
+  const addToCollectionRes = await fetch(`http://localhost:3000/api/v1/knowledge/${knowledgeId}/file/add`, {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ file_id: fileID }),
+  });
+
   const openwebuiResponseData = await openwebuiRes.json();
 
   // Check if sending file is successful
